@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Fake News Detection | Analytics & Live Classifier Dashboard</title>
+    <meta name="description" content="Interactive AI-Powered Fake News Detection platform featuring live text classification, ML model benchmark comparisons, and dataset analytics.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+                <span class="logo-text">VeriText<span class="highlight">AI</span></span>
+                <span class="badge">v2.4 Production</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#detector" class="nav-item active"><i class="fa-solid fa-wand-magic-sparkles"></i> Live Detector</a>
+                <a href="#metrics" class="nav-item"><i class="fa-solid fa-chart-column"></i> Model Benchmarks</a>
+                <a href="#dataset" class="nav-item"><i class="fa-solid fa-database"></i> Dataset Analytics</a>
+                <a href="#architecture" class="nav-item"><i class="fa-solid fa-diagram-project"></i> Architecture</a>
+                <a href="#report" class="nav-item"><i class="fa-solid fa-file-contract"></i> IEEE Report</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="https://github.com/sathvikgade/AI-FAKE-NEWS-DETECTION-.git" target="_blank" class="btn btn-outline">
+                    <i class="fa-brands fa-github"></i> GitHub Repo
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <main class="main-container">
+
+        <!-- Hero Stats Banner -->
+        <section class="stats-banner">
+            <div class="stat-card">
+                <div class="stat-icon fake"><i class="fa-solid fa-newspaper"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">40,058</span>
+                    <span class="stat-label">Trained News Articles</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon best"><i class="fa-solid fa-trophy"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">99.40%</span>
+                    <span class="stat-label">Best Accuracy (Random Forest)</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon models"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">4 ML Models</span>
+                    <span class="stat-label">KNN, LogReg, RF, Neural Net</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon latency"><i class="fa-solid fa-bolt"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">&lt; 15 ms</span>
+                    <span class="stat-label">TF-IDF Inference Latency</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: Live Interactive Classifier -->
+        <section id="detector" class="section-grid">
+            <div class="card detector-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-robot"></i> Live AI News Classification Engine</h2>
+                    <p class="subtitle">Paste any news headline or full article text below to get immediate classification probabilities from our trained models.</p>
+                </div>
+                
+                <!-- Sample Preset Buttons -->
+                <div class="presets-bar">
+                    <span class="preset-label">Test Samples:</span>
+                    <button class="preset-btn" onclick="loadSample('real_econ')"><i class="fa-solid fa-building-columns"></i> Real: Economy</button>
+                    <button class="preset-btn" onclick="loadSample('real_tech')"><i class="fa-solid fa-microchip"></i> Real: Tech Launch</button>
+                    <button class="preset-btn" onclick="loadSample('fake_alien')"><i class="fa-solid fa-user-ninja"></i> Fake: Alien Base</button>
+                    <button class="preset-btn" onclick="loadSample('fake_cure')"><i class="fa-solid fa-flask"></i> Fake: Miracle Cure</button>
+                </div>
+
+                <div class="input-group">
+                    <textarea id="newsInput" rows="6" placeholder="Type or paste news article content here (minimum 10 words recommended)..."></textarea>
+                    <div class="textarea-footer">
+                        <span id="charCount">0 characters | 0 words</span>
+                        <button class="btn btn-secondary btn-sm" onclick="clearInput()"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-primary btn-lg" onclick="analyzeNews()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Classify Article Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Prediction Results Display -->
+            <div class="card results-card" id="resultsPanel">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-square-poll-vertical"></i> Classification Breakdown</h3>
+                    <span id="verdictBadge" class="verdict-badge neutral">Awaiting Input</span>
+                </div>
+
+                <div class="results-body">
+                    <!-- Gauge / Probability Score -->
+                    <div class="metric-gauge-box">
+                        <div class="gauge-header">
+                            <span class="gauge-title">Model Confidence Score</span>
+                            <span id="confidencePercentage" class="gauge-value">--%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="confidenceFill" class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Model Prediction Matrix -->
+                    <div class="multi-model-predictions">
+                        <h4>Algorithm Consensus Matrix</h4>
+                        <div class="model-prediction-row">
+                            <span class="model-name"><i class="fa-solid fa-tree"></i> Random Forest (Ensemble)</span>
+                            <span id="predRF" class="pred-tag neutral">--</span>
+                        </div>
+                        <div class="model-prediction-row">
+                            <span class="model-name"><i class="fa-solid fa-sliders"></i> Logistic Regression</span>
+                            <span id="predLR" class="pred-tag neutral">--</span>
+                        </div>
+                        <div class="model-prediction-row">
+                            <span class="model-name"><i class="fa-solid fa-brain"></i> Simple Neural Network</span>
+                            <span id="predMLP" class="pred-tag neutral">--</span>
+                        </div>
+                        <div class="model-prediction-row">
+                            <span class="model-name"><i class="fa-solid fa-circle-nodes"></i> K-Nearest Neighbors</span>
+                            <span id="predKNN" class="pred-tag neutral">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Keywords Highlight / Preprocessing Tokens -->
+                    <div class="tokens-box">
+                        <h4>Extracted Preprocessed Tokens (TF-IDF Match)</h4>
+                        <div id="tokenContainer" class="token-container">
+                            <span class="token-placeholder">Click 'Classify Article Now' to inspect extracted tokens...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Model Performance Benchmarks -->
+        <section id="metrics" class="section-container">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-chart-line"></i> Model Evaluation Benchmarks (IEEE Dataset)</h2>
+                <p>Comparative empirical results trained across 40,058 news articles from the Kaggle Fake News repository.</p>
+            </div>
+
+            <!-- Table + Chart Side-by-Side -->
+            <div class="grid-2col">
+                <!-- Evaluation Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-table"></i> IEEE Metrics Matrix</h3>
+                        <button class="btn btn-sm btn-outline" onclick="exportTableCSV()"><i class="fa-solid fa-download"></i> Export CSV</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Model Class</th>
+                                    <th>Accuracy</th>
+                                    <th>Precision</th>
+                                    <th>Recall</th>
+                                    <th>F1-Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td><strong>Random Forest</strong></td>
+                                    <td><span class="tag tag-purple">Ensemble</span></td>
+                                    <td class="stat-highlight">99.40%</td>
+                                    <td>99.16%</td>
+                                    <td>99.58%</td>
+                                    <td class="stat-highlight">99.37%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Logistic Regression</strong></td>
+                                    <td><span class="tag tag-blue">Parametric</span></td>
+                                    <td>96.90%</td>
+                                    <td>96.45%</td>
+                                    <td>97.06%</td>
+                                    <td>96.75%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Neural Network (MLP)</strong></td>
+                                    <td><span class="tag tag-green">Deep Learning</span></td>
+                                    <td>96.20%</td>
+                                    <td>96.40%</td>
+                                    <td>95.59%</td>
+                                    <td>95.99%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>KNN</strong></td>
+                                    <td><span class="tag tag-amber">Non-Parametric</span></td>
+                                    <td>58.60%</td>
+                                    <td>98.44%</td>
+                                    <td>13.24%</td>
+                                    <td>23.33%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chart: Metrics Comparison -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-bar"></i> Algorithm Accuracy & F1-Score Comparison</h3>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confusion Matrices Section -->
+            <div class="card margin-top">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-border-all"></i> Interactive Confusion Matrix Inspector</h3>
+                    <div class="tab-group" id="cmTabs">
+                        <button class="tab-btn active" onclick="switchCM('rf')">Random Forest</button>
+                        <button class="tab-btn" onclick="switchCM('lr')">Logistic Regression</button>
+                        <button class="tab-btn" onclick="switchCM('mlp')">Neural Network</button>
+                        <button class="tab-btn" onclick="switchCM('knn')">KNN</button>
+                    </div>
+                </div>
+                <div class="cm-display-grid">
+                    <div class="cm-grid">
+                        <div class="cm-cell tp">
+                            <span class="cm-val" id="cmTP">474</span>
+                            <span class="cm-label">True Positives (Real Correct)</span>
+                        </div>
+                        <div class="cm-cell fp">
+                            <span class="cm-val" id="cmFP">4</span>
+                            <span class="cm-label">False Positives (Fake as Real)</span>
+                        </div>
+                        <div class="cm-cell fn">
+                            <span class="cm-val" id="cmFN">2</span>
+                            <span class="cm-label">False Negatives (Real as Fake)</span>
+                        </div>
+                        <div class="cm-cell tn">
+                            <span class="cm-val" id="cmTN">520</span>
+                            <span class="cm-label">True Negatives (Fake Correct)</span>
+                        </div>
+                    </div>
+                    <div class="cm-explanation">
+                        <h4 id="cmTitle">Random Forest Model Performance Breakdown</h4>
+                        <p id="cmDesc">Random Forest demonstrates exceptional precision and recall with only 6 misclassified samples out of 1,000 test cases due to effective decision tree feature splits across TF-IDF word vectors.</p>
+                        <div class="cm-stats-summary">
+                            <div><span>Sensitivity (Recall):</span> <strong id="cmSens">99.58%</strong></div>
+                            <div><span>Specificity:</span> <strong id="cmSpec">99.23%</strong></div>
+                            <div><span>Error Rate:</span> <strong id="cmErr">0.60%</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Dataset & TF-IDF Feature Analytics -->
+        <section id="dataset" class="section-container">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-database"></i> Dataset & Feature Engineering Analytics</h2>
+                <p>Exploratory data analysis of word frequency distributions and target class balances.</p>
+            </div>
+
+            <div class="grid-2col">
+                <!-- Class Distribution Pie Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Dataset Target Class Balance</h3>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="classDistChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top TF-IDF Keywords Bar Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-list-ol"></i> Top 10 TF-IDF Feature Importance</h3>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="featureImpChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Algorithm Architectural Specifications -->
+        <section id="architecture" class="section-container">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-diagram-project"></i> Algorithm Architectural Comparison</h2>
+                <p>Theoretical breakdown of non-parametric, parametric, ensemble, and deep learning algorithms implemented in the project.</p>
+            </div>
+
+            <div class="grid-4col">
+                <div class="card algo-card">
+                    <div class="algo-header amber">
+                        <i class="fa-solid fa-circle-nodes"></i>
+                        <h3>KNN</h3>
+                        <span class="algo-type">Non-Parametric</span>
+                    </div>
+                    <div class="algo-body">
+                        <p>Calculates Euclidean/Cosine distance to 5 nearest neighbors in feature space.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-xmark red"></i> High inference latency</li>
+                            <li><i class="fa-solid fa-xmark red"></i> Fails in high dimensions (58.6% Acc)</li>
+                            <li><i class="fa-solid fa-check green"></i> Simple implementation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card algo-card">
+                    <div class="algo-header blue">
+                        <i class="fa-solid fa-sliders"></i>
+                        <h3>Logistic Regression</h3>
+                        <span class="algo-type">Parametric Linear</span>
+                    </div>
+                    <div class="algo-body">
+                        <p>Applies sigmoid function to linear decision boundaries over TF-IDF terms.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check green"></i> Extremely fast training & inference</li>
+                            <li><i class="fa-solid fa-check green"></i> High accuracy (96.90%)</li>
+                            <li><i class="fa-solid fa-check green"></i> Highly interpretable weights</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card algo-card">
+                    <div class="algo-header purple">
+                        <i class="fa-solid fa-tree"></i>
+                        <h3>Random Forest</h3>
+                        <span class="algo-type">Ensemble Trees</span>
+                    </div>
+                    <div class="algo-body">
+                        <p>Combines 100 decision trees trained on random bootstrap samples of articles.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-crown gold"></i> Top Accuracy (99.40%)</li>
+                            <li><i class="fa-solid fa-check green"></i> Prevents overfitting</li>
+                            <li><i class="fa-solid fa-check green"></i> Robust to sparse word matrices</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card algo-card">
+                    <div class="algo-header green">
+                        <i class="fa-solid fa-brain"></i>
+                        <h3>Neural Network</h3>
+                        <span class="algo-type">MLP Classifier</span>
+                    </div>
+                    <div class="algo-body">
+                        <p>Multi-Layer Perceptron with 50 hidden neurons and ReLU activation functions.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check green"></i> Learns non-linear word patterns</li>
+                            <li><i class="fa-solid fa-check green"></i> Strong accuracy (96.20%)</li>
+                            <li><i class="fa-solid fa-xmark red"></i> Requires longer training time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: IEEE Documentation & Source Code -->
+        <section id="report" class="section-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-file-code"></i> Project Source Code & IEEE Guidelines</h3>
+                    <div class="btn-group">
+                        <a href="https://github.com/sathvikgade/AI-FAKE-NEWS-DETECTION-.git" target="_blank" class="btn btn-sm btn-primary">
+                            <i class="fa-brands fa-github"></i> View Full Repository
+                        </a>
+                    </div>
+                </div>
+                <div class="code-viewer-container">
+                    <div class="code-tabs">
+                        <button class="code-tab active" onclick="switchCode('main')">main.py</button>
+                        <button class="code-tab" onclick="switchCode('preprocess')">preprocessing.py</button>
+                        <button class="code-tab" onclick="switchCode('feature')">feature_engineering.py</button>
+                        <button class="code-tab" onclick="switchCode('train')">train.py</button>
+                        <button class="code-tab" onclick="switchCode('predict')">predict.py</button>
+                    </div>
+                    <pre class="code-block"><code id="codeDisplay"># Loading main.py...</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <p><strong>AI & ML Summer Internship Program 2026</strong> | Project 1: AI-Powered Fake News Detection</p>
+                <p class="subtext">Implemented from scratch using Python, Pandas, Scikit-Learn, NLTK & HTML/CSS/JS.</p>
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com/sathvikgade/AI-FAKE-NEWS-DETECTION-.git" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repository</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
