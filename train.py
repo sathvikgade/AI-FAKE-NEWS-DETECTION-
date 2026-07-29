@@ -3,12 +3,13 @@
 MODULE 3: MODEL TRAINING
 File: train.py
 ================================================================================
-Trains Logistic Regression, Random Forest, Simple Neural Network (MLP), and KNN.
-Saves optimal artifacts to disk for 100% accurate Real vs Fake prediction.
+Trains Logistic Regression, Random Forest, Simple Neural Network (MLP), and KNN
+on headline and content TF-IDF feature matrices. Saves optimal artifacts for deployment.
 """
 
 import os
 import joblib
+import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -16,17 +17,17 @@ from sklearn.neural_network import MLPClassifier
 
 def train_all_models(X_train, y_train):
     """
-    Trains KNN, Logistic Regression, Random Forest, and Simple Neural Network.
+    Trains KNN, Logistic Regression, Random Forest, and Neural Network (MLP).
     """
     models = {
-        "Logistic Regression (Parametric)": LogisticRegression(C=2.0, max_iter=1000, random_state=42),
+        "Logistic Regression (Parametric)": LogisticRegression(C=2.5, max_iter=1000, random_state=42),
         "Random Forest (Ensemble)": RandomForestClassifier(n_estimators=100, random_state=42),
         "Simple Neural Network (MLP)": MLPClassifier(hidden_layer_sizes=(50,), max_iter=200, random_state=42),
         "KNN (Non-Parametric)": KNeighborsClassifier(n_neighbors=5)
     }
     
     trained_models = {}
-    print("\n[Model Training] Starting multi-model training...")
+    print("\n[Model Training] Training all 4 Machine Learning Classifiers...")
     for name, model in models.items():
         print(f" -> Training {name}...")
         model.fit(X_train, y_train)
