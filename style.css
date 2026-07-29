@@ -457,6 +457,18 @@ textarea:focus {
     font-family: var(--font-mono);
 }
 
+.token-badge.real-token {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.token-badge.fake-token {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 .token-placeholder {
     font-size: 0.82rem;
     color: var(--text-dim);
