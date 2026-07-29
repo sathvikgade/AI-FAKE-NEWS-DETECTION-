@@ -3,16 +3,15 @@
 MODULE 4: MODEL EVALUATION
 File: evaluate.py
 ================================================================================
-Evaluates trained classifiers using Accuracy, Precision, Recall, F1-Score,
-Classification Reports, and Confusion Matrices. Formats output for IEEE reports.
+Evaluates trained models using Accuracy, Precision, Recall, F1-Score, and Classification Reports.
 """
 
 import pandas as pd
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
 def evaluate_all_models(trained_models, X_test, y_test):
     """
-    Evaluates predictions of all models and outputs IEEE metrics comparison table.
+    Evaluates model predictions and returns IEEE metrics summary table.
     """
     print("\n" + "="*65)
     print("                MODEL EVALUATION & IEEE METRICS MATRIX           ")
