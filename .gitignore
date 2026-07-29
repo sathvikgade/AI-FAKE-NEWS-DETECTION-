@@ -1,0 +1,11 @@
+# Ignore large dataset files
+*.csv
+data/
+
+# Python cache & temporary files
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.idea/
+.vscode/
